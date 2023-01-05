@@ -5,6 +5,7 @@ const totalQuestions = 5;
 const scoreKey ="quizscore";
 const correctMessage = "Correct!";
 const incorrectMessage = "Incorrect!";
+const initialParagraph = "Try to answer the following JavaScript related questions within the time limit of 75 seconds. Keep in mind that incorrect answers will penalize your score/time by 15 senconds. Your score will be the time left when all questions are completed or 0 if time runs out.";
 const allQuestions = [
     {
         question: "Which built-in method calls a function for each element in the array?",
@@ -100,3 +101,17 @@ const allQuestions = [
 //Global variables.
 var timeRemaining = -1;
 var timeInterval;
+
+//Gets elements from index file.
+var viewScores = document.getElementById("view-scores");
+var timeClass = document.querySelector(".time");
+var timeRemaining = document.getElementById("time-remaining");
+var content = document.getElementById("content");
+var heading = document.getElementById("heading");
+
+init();
+
+// The init() function fires when the page is loaded.
+function init(){
+
+}
