@@ -1,6 +1,7 @@
 /* Variables */
 :root{
     --voilet-color: rgb(74, 40, 100);
+    --light-voilet-color: rgb(131, 119, 163);
     --text-white-color: white;
 }
 
@@ -34,7 +35,8 @@ header li{
 
 #content{
     margin: 0 auto;
-    width: 50%;
+    width: fit-content;
+    max-width: 50%;
 }
 
 #heading{
@@ -64,4 +66,22 @@ header li{
 
 .hand{
     cursor: pointer;
+}
+
+.question-heading{
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.option{
+    margin-bottom: 0.5rem;
+    background-color: var(--voilet-color);
+    color: var(--text-white-color);
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.3rem;
+}
+
+.option:hover{
+    background-color: var(--light-voilet-color);
 }
