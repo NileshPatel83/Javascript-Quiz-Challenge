@@ -103,17 +103,17 @@ const allQuestions = [
 ];
 
 //Global variables.
-var timeLeft = -1;
-var timeInterval;
+let timeLeft = -1;
+let timeInterval;
 
 //Gets elements from index file.
-var viewScores = document.getElementById("view-scores");
-var timeElement = document.getElementById("time");
-var timeRemaining = document.getElementById("time-remaining");
-var initialParagraph = document.getElementById("initial-paragraph");
-var startButton = document.getElementById("start-button");
-var content = document.getElementById("content");
-var heading = document.getElementById("heading");
+const viewScores = document.getElementById("view-scores");
+const timeElement = document.getElementById("time");
+const timeRemaining = document.getElementById("time-remaining");
+const initialParagraph = document.getElementById("initial-paragraph");
+const startButton = document.getElementById("start-button");
+const content = document.getElementById("content");
+const heading = document.getElementById("heading");
 
 init();
 
@@ -137,9 +137,36 @@ startButton.addEventListener("click", function(){
     timeRemaining.textContent = timeAllowed;
 
     // Starts the timer.
-    startTimer();
+    // startTimer();
+
+    //Gets list of 5 questions randomly from all questions list.
+    let quizList = getQuizList();
 
 });
+
+//Gets list of 5 questions randomly from all questions list.
+function getQuizList(){
+    let quizList = [];
+
+    for (let i = 0; i < totalQuestions; i++) {
+
+        //Randomly gets the question from all questions array.
+        let randomQuiz = allQuestions[Math.floor(Math.random() * allQuestions.length)];
+        
+        //Checks whether current question is already added to the list or not.
+        //If true then repeats the step.
+        if(quizList.includes(randomQuiz)){
+            i--;
+        }
+
+        //Otherwise adds the question to quiz list.
+        else{
+            quizList.push(randomQuiz);
+        }
+    }
+
+    return quizList;
+}
 
 //Starts the timer function.
 function startTimer(){
