@@ -1,13 +1,15 @@
 //Constants
-const timeAllowed = 75;
-const timeDeduction = 15;
-const totalQuestions = 5;
-const hiddenElement = "hidden";
-const visibleElement = "visible"
-const displayNone = "none";
-const scoreKey ="quizscore";
-const correctMessage = "Correct!";
-const incorrectMessage = "Incorrect!";
+const timeAllowed = 75;                         //Time allowed for the quiz.
+const timeDeduction = 15;                       //Time deduction if user chooses wrong answer.
+const totalQuestions = 5;                       //Questions to be asked.
+const hiddenElement = "hidden";                 //Hides the element.
+const visibleElement = "visible"                //Makes the element visible.
+const displayNone = "none";                     //Sets the display of element to none.
+const scoreKey ="quizscore";                    //Text used to get all keys from local storage.
+const correctMessage = "Correct!";              //Dispplay message for correct answer.
+const incorrectMessage = "Incorrect!";          //Display message for incorrect answer.
+
+//Total number of quiz from which 5 questions will be chosen randomly.
 const allQuestions = [
     {
         question: "Which built-in method calls a function for each element in the array?",
@@ -101,12 +103,12 @@ const allQuestions = [
 ];
 
 //Global variables.
-var timeRemaining = -1;
+var timeLeft = -1;
 var timeInterval;
 
 //Gets elements from index file.
 var viewScores = document.getElementById("view-scores");
-var timeClass = document.getElementById("time");
+var timeElement = document.getElementById("time");
 var timeRemaining = document.getElementById("time-remaining");
 var initialParagraph = document.getElementById("initial-paragraph");
 var startButton = document.getElementById("start-button");
@@ -118,8 +120,43 @@ init();
 // The init() function fires when the page is loaded.
 function init(){
 
-    timeClass.style.visibility = hiddenElement;
-    // initialParagraph.style.display = displayNone;
-    // startButton.style.display = displayNone;
+    timeElement.style.visibility = hiddenElement;
+   
 }
 
+//Event listener for start button.
+startButton.addEventListener("click", function(){
+
+    //Hides header, paragrapg and start quiz buttton.
+    heading.style.display = displayNone;
+    initialParagraph.style.display = displayNone;
+    startButton.style.display = displayNone;
+
+    //Makes the remaining time text visible and sets the initial time to time allowed.
+    timeElement.style.visibility = visibleElement;
+    timeRemaining.textContent = timeAllowed;
+
+    // Starts the timer.
+    startTimer();
+
+});
+
+//Starts the timer function.
+function startTimer(){
+    timeLeft = timeAllowed;
+    
+    timeInterval = setInterval(function () {
+        timeLeft--;
+
+        //Sets the new time value.
+        timeRemaining.textContent = timeLeft;
+
+        //Stops the timer and displays score as 0.
+        if(timeLeft === 0){
+            clearInterval(timeInterval);
+
+            //Hides remaining time text.
+            timeElement.style.display = displayNone;
+        }
+    }, 1000);    
+}
