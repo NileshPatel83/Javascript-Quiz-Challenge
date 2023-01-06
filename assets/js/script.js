@@ -10,6 +10,8 @@ const correctMessage = 'Correct!';              //Dispplay message for correct a
 const incorrectMessage = 'Incorrect!';          //Display message for incorrect answer.
 const questionHeadingClass = 'question-heading' //Question heading class name.
 const optionClass = 'option';                   //Class name for options displayed for question.
+const handClass = 'hand';                       //Class name to set cursor to hand.
+const optionsID = 'options';                    //ID name for un-ordered list element. This will be used to get its childrens.
 
 //Total number of quiz from which 5 questions will be chosen randomly.
 const allQuestions = [
@@ -109,6 +111,7 @@ let timeLeft = -1;
 let timeInterval;
 let quizList;                                   //List of 5 question chosen randomly that are displayed in browser.
 let correctAnswer;                              //Correct answer for the question displayed in browser.
+let questionNumber;                             //Question number count.
 
 //Gets elements from index file.
 const viewScoresEl = document.getElementById('view-scores');
@@ -119,13 +122,81 @@ const startButtonEl = document.getElementById('start-button');
 const contentEL = document.getElementById('content');
 const headingEl = document.getElementById('heading');
 
-init();
+//Event listener for container element.
+contentEL.addEventListener('click', function(event){
 
-// The init() function fires when the page is loaded.
-function init(){
+    //Gets the clicked element.
+    let selectedOptionEl = event.target;
 
-    //Hides the remaining time when page loads.
-    timeEl.style.visibility = hiddenElement;
+    //Exists the event if clicked element is not a list (option of the question).
+    if(selectedOptionEl.nodeName.toLowerCase() !== 'li') return;
+
+    //Gets the user selected option.
+    let userAnswer = selectedOptionEl.textContent;
+
+    //Removes the option number and space.
+    userAnswer = userAnswer.substring(userAnswer.indexOf(' ') + 1);
+
+    //Creates a div element to display the result as correct or incorrect.
+    let resultEl = document.createElement('div');
+
+    //Checks whether user selected option is a correct answer or not.
+    //If the option is correct, displays the result as correct in green color.
+    if(correctAnswer === userAnswer){
+        resultEl.textContent = correctMessage;
+        resultEl.style.color ='green';
+    }
+
+    //If the option is incorrect, displays the result as incorrect with red color.
+    else{
+        resultEl.textContent = incorrectMessage;
+        resultEl.style.color ='red';
+    }
+
+    //Adds the div element to contect element to display it in browser.
+    contentEL.appendChild(resultEl);
+
+    //Pauses the process for half a second.
+    //This will allow the user to see the result before the removed current question elements from the browser and
+    //displaying the next question elements.
+    setTimeout(() => {processQuestions()}, 500);
+});
+
+//Removes the current question elements from browser and displays next question elements in browser.
+//Displays final score if all 5 questions are processed.
+function processQuestions(){
+
+
+    if(questionNumber == totalQuestions){
+
+    }
+    else{
+        //Removes current question elements from browser.
+        removePreviousQuestionElements();
+
+        //Displays the next question in browser.
+        displayQuestionInBrowser(questionNumber);
+
+        //Increments the question counter.
+        questionNumber++;
+    }
+}
+
+//Removes current question elements from browser.
+function removePreviousQuestionElements(){
+
+    //Gets all direct children elements of content element.
+    let contentChilren = contentEL.children;
+
+    //Loops through all children to remove question elements (h2, ul and div).
+    for (let i = 0; i < contentChilren.length; i++) {
+        if(contentChilren[i].nodeName.toLowerCase() === 'h2' || contentChilren[i].nodeName.toLowerCase() === 'ul' || contentChilren[i].nodeName.toLowerCase() === 'div'){
+            contentChilren[i].remove();
+
+            //Decrements 'i' to reset the index.
+            i--;
+        }
+    }
 }
 
 //Event listener for start button.
@@ -140,6 +211,9 @@ startButtonEl.addEventListener('click', function(){
     timeEl.style.visibility = visibleElement;
     timeRemainingEl.textContent = timeAllowed;
 
+    //Sets the initial value to 0, which displays the first question.
+    questionNumber = 0;
+
     // Starts the timer.
     // startTimer();
 
@@ -147,7 +221,10 @@ startButtonEl.addEventListener('click', function(){
     quizList = getQuizList();
 
     //Displays first question in browser.
-    displayQuestionInBrowser(0);
+    displayQuestionInBrowser(questionNumber);
+
+    //Increments the question counter.
+    questionNumber++;
 });
 
 //Displays question and options in browser for specified index.
@@ -158,7 +235,7 @@ function displayQuestionInBrowser(index){
 
     //Gets the correct answer for the question.
     //This will be used to check whether user has clicked on correct option or not.
-    correctAnswer = quiz.correctAnswer;
+    correctAnswer = quiz.answer;
 
     //Creates the question as h2 element and set its text and class to 'question-heading' class.
     let questionEl = document.createElement('h2');
@@ -174,7 +251,7 @@ function displayQuestionInBrowser(index){
     for (let i = 0; i < quiz.options.length; i++) {
 
         let optionEl = document.createElement('li');
-        optionEl.className = optionClass;
+        optionEl.classList.add(optionClass, handClass);
 
         optionEl.textContent = `${i + 1}. ${quiz.options[i]}`;
 
@@ -228,3 +305,12 @@ function startTimer(){
         }
     }, 1000);    
 }
+
+// The init() function fires when the page is loaded.
+function init(){
+
+    //Hides the remaining time when page loads.
+    timeEl.style.visibility = hiddenElement;
+}
+
+init();
