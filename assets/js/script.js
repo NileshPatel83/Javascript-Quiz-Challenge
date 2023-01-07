@@ -5,9 +5,15 @@ const totalQuestions = 5;                       //Questions to be asked.
 const hiddenElement = 'hidden';                 //Hides the element.
 const visibleElement = 'visible';               //Makes the element visible.
 const displayNone = 'none';                     //Sets the display of element to none.
+const displayInline = 'inline'                  //Sets the dispaly of element to inline.
+const oneRemSpace = '1rem'                      //One REM space for margin.
 const scoreKey ='quizscore';                    //Text used to get all keys from local storage.
 const correctMessage = 'Correct!';              //Dispplay message for correct answer.
 const incorrectMessage = 'Incorrect!';          //Display message for incorrect answer.
+const resultHeading = 'All done!'               //Result heading.
+const resultMessage = 'Your final score:'       //Resuly message.
+const initialText = 'Enter initials: '           //Initials text.
+const resultButtonText = 'Submit'               //Button text to submit result.
 const questionHeadingClass = 'question-heading' //Question heading class name.
 const optionClass = 'option';                   //Class name for options displayed for question.
 const handClass = 'hand';                       //Class name to set cursor to hand.
@@ -166,14 +172,16 @@ contentEL.addEventListener('click', function(event){
 //Displays final score if all 5 questions are processed.
 function processQuestions(){
 
+    //Removes current question elements from browser.
+    removeCurrentQuestionElements();
 
-    if(questionNumber == totalQuestions){
+    //Displays result if all 5 questions are processed or timer reaches 0.
+    if(questionNumber == totalQuestions || timeLeft == 0){
 
+        //Displays results.
+        displayResult();
     }
     else{
-        //Removes current question elements from browser.
-        removePreviousQuestionElements();
-
         //Displays the next question in browser.
         displayQuestionInBrowser(questionNumber);
 
@@ -182,8 +190,56 @@ function processQuestions(){
     }
 }
 
+//Displays results.
+function displayResult(){
+
+    //Hides remaining time text.
+    timeEl.style.display = displayNone;
+
+    //Creates h2 header.
+    let resultHeadingEl = document.createElement('h2');
+    resultHeadingEl.textContent = resultHeading;
+    resultHeadingEl.className = questionHeadingClass;
+    contentEL.appendChild(resultHeadingEl);
+
+    //Creates div element and dispaly result score.
+    //Set bottom marning to 1rem.
+    let resultMessageEl = document.createElement('div');
+    resultMessageEl.textContent = `${resultMessage} ${timeLeft}.`
+    resultMessageEl.style.marginBottom = oneRemSpace;
+    contentEL.appendChild(resultMessageEl);
+
+    //Creates a div element that contains initial text, textbox to enter initial and submit button.
+    let initialContainerEl = document.createElement('div');
+
+    //Creates div element to show initial text.
+    //Sets display syle to inline.
+    let initialEl = document.createElement('div');
+    initialEl.textContent = initialText;
+    initialEl.style.display = displayInline;
+    initialContainerEl.appendChild(initialEl);
+
+    //Creates textbox element to enter initial.
+    let initialInputEl = document.createElement('INPUT');
+    initialInputEl.setAttribute('type', 'text');
+    initialContainerEl.appendChild(initialInputEl);
+
+    //Create buttom element for submision.
+    //Sets left margin to 1rem, border to none.
+    //Adds 'option' and 'hand' classes.
+    let submitButtonEl = document.createElement('button');
+    submitButtonEl.innerHTML = resultButtonText;
+    submitButtonEl.style.border = displayNone;
+    submitButtonEl.style.marginLeft= oneRemSpace;
+    submitButtonEl.classList.add(optionClass, handClass);
+    initialContainerEl.appendChild(submitButtonEl);
+
+    //Appends the elements to parent div element.
+    contentEL.appendChild(initialContainerEl);
+}
+
 //Removes current question elements from browser.
-function removePreviousQuestionElements(){
+function removeCurrentQuestionElements(){
 
     //Gets all direct children elements of content element.
     let contentChilren = contentEL.children;
@@ -300,8 +356,8 @@ function startTimer(){
         if(timeLeft === 0){
             clearInterval(timeInterval);
 
-            //Hides remaining time text.
-            timeEl.style.display = displayNone;
+            //Displays results.
+            displayResult();
         }
     }, 1000);    
 }
