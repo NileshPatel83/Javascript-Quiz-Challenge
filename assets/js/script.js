@@ -2,6 +2,7 @@
 const timeAllowed = 75;                         //Time allowed for the quiz.
 const timeDeduction = 15;                       //Time deduction if user chooses wrong answer.
 const totalQuestions = 5;                       //Questions to be asked.
+const totalRecords = 10;                        //Only shows top 10 highscores from local storage.
 const hiddenElement = 'hidden';                 //Hides the element.
 const visibleElement = 'visible';               //Makes the element visible.
 const displayNone = 'none';                     //Sets the display of element to none.
@@ -140,8 +141,8 @@ const headingEl = document.getElementById('heading');
 //Event listener when 'View Highscores' text is clicked.
 viewScoresEl.addEventListener('click', function(){
 
-    //Hides header, paragrapg and start quiz buttton.
-    hideInitialContent();
+    //Remove all chile elements from content element.
+    removeContentElements();
 
     //Displays high scores from local storage.
     displayHighScores();
@@ -170,7 +171,7 @@ contentEL.addEventListener('click', function(event){
         window.location.reload();
     }
 
-    //Clear high score button.
+    //if clear high score button is clicked, removes all local storage.
     else if (selectedOptionEl.nodeName.toLowerCase() === 'button' && selectedOptionEl.id === clearScoreButtonID){
 
     }
@@ -213,10 +214,14 @@ function displayHighScores(){
     //Creates un-ordered list element to display high scores.
     let ulEl = document.createElement('ul');
 
+    //Only shows maximum top 10 records from local storage.
+    let length = totalRecords;
+    if(quizStorage.length < totalRecords) length = quizStorage.length;
+
     //Loops thorugh local storage and creates list element for each score.
     //Sets background color for every second element.
     //Adds these list elements to un-ordered list element.
-    for (let i = 0; i < quizStorage.length; i++) {
+    for (let i = 0; i < length; i++) {
 
         let optionEl = document.createElement('li');
         optionEl.className = highScoreClass;
