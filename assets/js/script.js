@@ -165,10 +165,15 @@ contentEL.addEventListener('click', function(event){
         submitResult();
     }
 
-    //Go Back button.
-
+    //If go back button is clicked, reloads the page.
+    else if (selectedOptionEl.nodeName.toLowerCase() === 'button' && selectedOptionEl.id === goBackButtonID){
+        window.location.reload();
+    }
 
     //Clear high score button.
+    else if (selectedOptionEl.nodeName.toLowerCase() === 'button' && selectedOptionEl.id === clearScoreButtonID){
+
+    }
 });
 
 //Submits the result and updates the local storage. Also displays high scores from local storage.
@@ -180,10 +185,8 @@ function submitResult(){
     if(userInitial === '') return null;
 
     //Hide result elements.
+    removeContentElements();
 
-
-    
-    
     //Gets the storage counter for current result.
     let storageCounter = getStorageCounter();
 
@@ -349,7 +352,7 @@ function processQuestionOption(selectedOptionEl){
 function processQuestions(){
 
     //Removes current question elements from browser.
-    removeCurrentQuestionElements();
+    removeContentElements();
 
     //Displays result if all 5 questions are processed or timer reaches 0.
     if(questionNumber == totalQuestions || timeLeft <= 0){
@@ -424,20 +427,16 @@ function displayResult(){
     contentEL.appendChild(initialContainerEl);
 }
 
-//Removes current question elements from browser.
-function removeCurrentQuestionElements(){
+//Removes all children from content element and clears the page.
+function removeContentElements(){
 
     //Gets all direct children elements of content element.
     let contentChilren = contentEL.children;
 
-    //Loops through all children to remove question elements (h2, ul and div).
-    for (let i = 0; i < contentChilren.length; i++) {
-        if(contentChilren[i].nodeName.toLowerCase() === 'h2' || contentChilren[i].nodeName.toLowerCase() === 'ul' || contentChilren[i].nodeName.toLowerCase() === 'div'){
-            contentChilren[i].remove();
-
-            //Decrements 'i' to reset the index.
-            i--;
-        }
+    //Loops through all children and removed them from content element and makes the page clear.
+    for (let i = 0; i < contentChilren.length; i++){
+         contentChilren[i].remove();
+         i--;
     }
 }
 
@@ -552,7 +551,7 @@ function startTimer(){
             clearInterval(timeInterval);
 
             //Removes current question elements from browser.
-            removeCurrentQuestionElements();
+            removeContentElements();
 
             //Displays results.
             displayResult();
