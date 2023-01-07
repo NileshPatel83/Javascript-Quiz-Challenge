@@ -166,12 +166,8 @@ function submitResult(){
     //Gets all local storage for the quiz game.
     let quizStorage = getQuizStorage();
     
-    let storageCounter = 0;
-
-    if(quizStorage !== null){
-        // storageCounter = getLastStorageCounter(quizStorage);
-        storageCounter++;
-    }
+    //Gets the storage counter for current result.
+    let storageCounter = getStorageCounter();
 
     //Stores current result to localstorage and returns it as an object.
     let currentResult = storeCurrentResultToLocalStorage(storageCounter, userInitial);
@@ -201,6 +197,28 @@ function storeCurrentResultToLocalStorage(storageCounter, userInitial){
     return currentResult;
 }
 
+//Gets the storage counter for current result.
+//This is done by getting all keys for the quiz game, finding the last counter and incrementing it.
+function getStorageCounter(){
+
+    let counter = 0;
+
+    //Gets all keys from local storage.
+    let keys = Object.keys(localStorage);
+
+    //Loops through all keys and gets the key pair.
+    for (let i = 0; i < keys.length; i++){
+        //Only processes key if it includes the word 'quizscore-'.
+        if(keys[i].includes(scoreKey)){
+            let number = parseInt(keys[i].replace(scoreKey, '', 10));
+
+            if(number > counter) counter = number;
+        }
+    }
+
+    return counter + 1;
+}
+
 //Gets all local storage for the quiz game.
 function getQuizStorage(){
 
@@ -221,7 +239,8 @@ function getQuizStorage(){
         }
     }
 
-    return quizStorage;
+    //Returns the storage in descending order by score.
+    return quizStorage.sort(({score:lowScore}, {score:highScore}) => highScore-lowScore);
 }
 
 //When one of the option from question is clicked, displays the result and processes next question.
