@@ -1,32 +1,20 @@
 //Constants
-const timeAllowed = 75;                         //Time allowed for the quiz.
-const timeDeduction = 15;                       //Time deduction if user chooses wrong answer.
-const totalQuestions = 5;                       //Questions to be asked.
-const hiddenElement = 'hidden';                 //Hides the element.
-const visibleElement = 'visible';               //Makes the element visible.
-const displayNone = 'none';                     //Sets the display of element to none.
-const displayInline = 'inline'                  //Sets the dispaly of element to inline.
-const oneRemSpace = '1rem'                      //One REM space for margin.
-const scoreKey ='quizscore-';                    //Text used to get all keys from local storage.
-const correctMessage = 'Correct!';              //Dispplay message for correct answer.
-const incorrectMessage = 'Incorrect!';          //Display message for incorrect answer.
-const resultHeading = 'All done!'               //Result heading.
-const resultMessage = 'Your final score:'       //Resuly message.
-const initialText = 'Enter initials: '          //Initials text.
-const resultButtonText = 'Submit'               //Button text to submit result.
-const highScoreText = 'Highscores'              //Highscore text.
-const gobackButtonText = 'Go Back'              //Go Back buttom text.
-const clearScoreButtonText = 'Clear Highscores'  //Clear highscore button text.
-const userInitialID = 'user-initial'            //ID for user initial textbox.
-const submitButtonID= 'submit-button'           //ID for submit button.
-const goBackButtonID = 'go-back'                //ID for go back button.
-const clearScoreButtonID= 'clear-score'         //ID for clear high scrore button.
-const highscoreButtonMargin = '1rem 0.5rem 0.5rem 0.5rem'   //Highscore buttons margin.
-const questionHeadingClass = 'question-heading' //Question heading class name.
-const optionClass = 'option';                   //Class name for options displayed for question.
-const handClass = 'hand';                       //Class name to set cursor to hand.
-const highScoreClass = 'highscore'              //Class name for high score list items.
-const optionsID = 'options';                    //ID name for un-ordered list element. This will be used to get its childrens.
+const timeAllowed = 75;                                         //Time allowed for the quiz.
+const timeDeduction = 15;                                       //Time deduction if user chooses wrong answer.
+const totalQuestions = 5;                                       //Questions to be asked.
+const hiddenElement = 'hidden';                                 //Hides the element.
+const visibleElement = 'visible';                               //Makes the element visible.
+const displayNone = 'none';                                     //Sets the display of element to none.
+const oneRemSpace = '1rem';                                     //One REM space for margin.
+const scoreKey ='quizscore-';                                   //Text used to get all keys from local storage.
+const userInitialID = 'user-initial';                           //ID for user initial textbox.
+const submitButtonID= 'submit-button';                          //ID for submit button.
+const goBackButtonID = 'go-back';                               //ID for go back button.
+const clearScoreButtonID= 'clear-score';                        //ID for clear high scrore button.
+const highscoreButtonMargin = '1rem 0.5rem 0.5rem 0.5rem';      //Highscore buttons margin.
+const questionHeadingClass = 'question-heading';                //Question heading class name.
+const optionClass = 'option';                                   //Class name for options displayed for question.
+const handClass = 'hand';                                       //Class name to set cursor to hand.
 
 //Total number of quiz from which 5 questions will be chosen randomly.
 const allQuestions = [
@@ -132,10 +120,8 @@ let questionNumber;                             //Question number count.
 const viewScoresEl = document.getElementById('view-scores');
 const timeEl = document.getElementById('time');
 const timeRemainingEl = document.getElementById('time-remaining');
-const initialParagraphEl = document.getElementById('initial-paragraph');
 const startButtonEl = document.getElementById('start-button');
 const contentEL = document.getElementById('content');
-const headingEl = document.getElementById('heading');
 
 //Event listener when 'View Highscores' text is clicked.
 viewScoresEl.addEventListener('click', function(){
@@ -206,7 +192,7 @@ function displayHighScores(){
 
     //Creates h2 element and set its text to 'Highscores' and class to 'question-heading' class.
     let viewScoreEl = document.createElement('h2');
-    viewScoreEl.textContent = highScoreText;
+    viewScoreEl.textContent = 'Highscores';
     viewScoreEl.className = questionHeadingClass;
     contentEL.appendChild(viewScoreEl);
 
@@ -219,7 +205,7 @@ function displayHighScores(){
     for (let i = 0; i < quizStorage.length; i++) {
 
         let optionEl = document.createElement('li');
-        optionEl.className = highScoreClass;
+        optionEl.className = 'highscore';
 
         if(i % 2 === 0) optionEl.style.backgroundColor= 'rgb(242, 238, 248)';
 
@@ -232,7 +218,7 @@ function displayHighScores(){
 
     //Creates go back button.
     let gobackButtonEl = document.createElement('button');
-    gobackButtonEl.innerHTML = gobackButtonText;
+    gobackButtonEl.innerHTML = 'Go Back';
     gobackButtonEl.style.border = displayNone;
     gobackButtonEl.classList.add(optionClass, handClass);
     gobackButtonEl.style.margin= highscoreButtonMargin;
@@ -241,7 +227,7 @@ function displayHighScores(){
 
     //Creates clear highscores button.
     let clearScoreButtonEl = document.createElement('button');
-    clearScoreButtonEl.innerHTML = clearScoreButtonText;
+    clearScoreButtonEl.innerHTML = 'Clear Highscores';
     clearScoreButtonEl.style.border = displayNone;
     clearScoreButtonEl.classList.add(optionClass, handClass);
     clearScoreButtonEl.style.margin= highscoreButtonMargin;
@@ -325,7 +311,7 @@ function processQuestionOption(selectedOptionEl){
     //Checks whether user selected option is a correct answer or not.
     //If the option is correct, displays the result as correct in green color.
     if(correctAnswer === userAnswer){
-        resultEl.textContent = correctMessage;
+        resultEl.textContent = 'Correct!';
         resultEl.style.color ='green';
     }
 
@@ -334,7 +320,7 @@ function processQuestionOption(selectedOptionEl){
 
         //Deducts 15 seconds from time remaining time if the selected option is incorrect.
         timeLeft -= timeDeduction;  
-        resultEl.textContent = incorrectMessage;
+        resultEl.textContent = 'Incorrect!';
         resultEl.style.color ='red';
     }
 
@@ -383,7 +369,7 @@ function displayResult(){
 
     //Creates h2 header.
     let resultHeadingEl = document.createElement('h2');
-    resultHeadingEl.textContent = resultHeading;
+    resultHeadingEl.textContent = 'All done!';
     resultHeadingEl.className = questionHeadingClass;
     contentEL.appendChild(resultHeadingEl);
 
@@ -392,7 +378,7 @@ function displayResult(){
     let resultMessageEl = document.createElement('div');
 
     //Displays score as time remaining. If the time is less than 0 then shows the score as 0.
-    resultMessageEl.textContent = `${resultMessage} ${timeLeft < 0 ? 0: timeLeft}.`
+    resultMessageEl.textContent = `Your final score: ${timeLeft < 0 ? 0: timeLeft}.`
     resultMessageEl.style.marginBottom = oneRemSpace;
     contentEL.appendChild(resultMessageEl);
 
@@ -402,8 +388,8 @@ function displayResult(){
     //Creates div element to show initial text.
     //Sets display syle to inline.
     let initialEl = document.createElement('div');
-    initialEl.textContent = initialText;
-    initialEl.style.display = displayInline;
+    initialEl.textContent = 'Enter initials: ';
+    initialEl.style.display = 'inline';
     initialContainerEl.appendChild(initialEl);
 
     //Creates textbox element to enter initial.
@@ -416,7 +402,7 @@ function displayResult(){
     //Sets left margin to 1rem, border to none.
     //Adds 'option' and 'hand' classes.
     let submitButtonEl = document.createElement('button');
-    submitButtonEl.innerHTML = resultButtonText;
+    submitButtonEl.innerHTML = 'Submit';
     submitButtonEl.style.border = displayNone;
     submitButtonEl.style.marginLeft= oneRemSpace;
     submitButtonEl.classList.add(optionClass, handClass);
