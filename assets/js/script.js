@@ -134,9 +134,16 @@ contentEL.addEventListener('click', function(event){
     //Gets the clicked element.
     let selectedOptionEl = event.target;
 
-    //Exists the event if clicked element is not a list (option of the question).
-    if(selectedOptionEl.nodeName.toLowerCase() !== 'li') return;
+    //If clicked element is a list (option of the question), displays a result and processes next question.
+    if(selectedOptionEl.nodeName.toLowerCase() === 'li') {
+        processQuestionOption(selectedOptionEl);
+    }
 
+    
+});
+
+//When one of the option from question is clicked, displays the result and processes next question.
+function processQuestionOption(selectedOptionEl){
     //Gets the user selected option.
     let userAnswer = selectedOptionEl.textContent;
 
@@ -166,7 +173,7 @@ contentEL.addEventListener('click', function(event){
     //This will allow the user to see the result before the removed current question elements from the browser and
     //displaying the next question elements.
     setTimeout(() => {processQuestions()}, 500);
-});
+}
 
 //Removes the current question elements from browser and displays next question elements in browser.
 //Displays final score if all 5 questions are processed.
