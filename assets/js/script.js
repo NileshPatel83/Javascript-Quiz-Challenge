@@ -295,7 +295,7 @@ function displayQuestionInBrowser(index){
 
     //Creates the question as h2 element and set its text and class to 'question-heading' class.
     let questionEl = document.createElement('h2');
-    questionEl.textContent = quiz.question;
+    questionEl.textContent = `${index + 1}. ${quiz.question}`;
     questionEl.className = questionHeadingClass;
     contentEL.appendChild(questionEl);
 
