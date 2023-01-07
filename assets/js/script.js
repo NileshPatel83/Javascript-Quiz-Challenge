@@ -158,9 +158,30 @@ contentEL.addEventListener('click', function(event){
 
     //if clear high score button is clicked, removes all local storage.
     else if (selectedOptionEl.nodeName.toLowerCase() === 'button' && selectedOptionEl.id === clearScoreButtonID){
-
+        removeLocalStorage();
     }
 });
+
+//Removes all local storage for the game.
+function removeLocalStorage(){
+
+    //Gets all keys from local storage.
+    let keys = Object.keys(localStorage);
+
+    //Loops through all keys and removes them from local storae.
+    for (let i = 0; i < keys.length; i++) localStorage.removeItem(keys[i]);
+
+    //Gets all direct children elements of content element.
+    let contentChilren = contentEL.children;
+
+    //Loops through all children and removes high score unordered list element.
+    for (let i = 0; i < contentChilren.length; i++){
+        if(contentChilren[i].nodeName.toLowerCase() === 'ul') {
+            contentChilren[i].remove();
+            i--;
+        }
+    }
+}
 
 //Submits the result and updates the local storage. Also displays high scores from local storage.
 function submitResult(){
