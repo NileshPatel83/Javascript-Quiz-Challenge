@@ -265,7 +265,7 @@ function storeCurrentResultToLocalStorage(storageCounter, userInitial){
     //Creates oject for current result.
     let currentResult = {
         initial: userInitial,
-        score: timeLeft
+        score: timeLeft < 0 ? 0: timeLeft
     };
 
     //Creates key.
