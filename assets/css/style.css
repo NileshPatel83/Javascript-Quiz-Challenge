@@ -82,6 +82,11 @@ header li{
     border-radius: 0.3rem;
 }
 
+.highscore{
+    line-height: 1.2rem;
+    padding: 0.3rem 0.5rem;
+}
+
 .option:hover, #start-button:hover{
     background-color: var(--light-voilet-color);
 }

@@ -12,12 +12,20 @@ const correctMessage = 'Correct!';              //Dispplay message for correct a
 const incorrectMessage = 'Incorrect!';          //Display message for incorrect answer.
 const resultHeading = 'All done!'               //Result heading.
 const resultMessage = 'Your final score:'       //Resuly message.
-const initialText = 'Enter initials: '           //Initials text.
+const initialText = 'Enter initials: '          //Initials text.
 const resultButtonText = 'Submit'               //Button text to submit result.
+const highScoreText = 'Highscores'              //Highscore text.
+const gobackButtonText = 'Go Back'              //Go Back buttom text.
+const clearScoreButtonText = 'Clear Highscores'  //Clear highscore button text.
 const userInitialID = 'user-initial'            //ID for user initial textbox.
+const submitButtonID= 'submit-button'           //ID for submit button.
+const goBackButtonID = 'go-back'                //ID for go back button.
+const clearScoreButtonID= 'clear-score'         //ID for clear high scrore button.
+const highscoreButtonMargin = '1rem 0.5rem 0.5rem 0.5rem'   //Highscore buttons margin.
 const questionHeadingClass = 'question-heading' //Question heading class name.
 const optionClass = 'option';                   //Class name for options displayed for question.
 const handClass = 'hand';                       //Class name to set cursor to hand.
+const highScoreClass = 'highscore'              //Class name for high score list items.
 const optionsID = 'options';                    //ID name for un-ordered list element. This will be used to get its childrens.
 
 //Total number of quiz from which 5 questions will be chosen randomly.
@@ -129,6 +137,16 @@ const startButtonEl = document.getElementById('start-button');
 const contentEL = document.getElementById('content');
 const headingEl = document.getElementById('heading');
 
+//Event listener when 'View Highscores' text is clicked.
+viewScoresEl.addEventListener('click', function(){
+
+    //Hides header, paragrapg and start quiz buttton.
+    hideInitialContent();
+
+    //Displays high scores from local storage.
+    displayHighScores();
+});
+
 //Event listener for container element.
 contentEL.addEventListener('click', function(event){
 
@@ -140,19 +158,17 @@ contentEL.addEventListener('click', function(event){
         processQuestionOption(selectedOptionEl);
     }
 
-    //If sumbit button is selected when result is displayed.
-    //Ignores when start button is selected.
-    else if (selectedOptionEl.nodeName.toLowerCase() === 'button' && selectedOptionEl.id !== 'start-button'){
+    //If sumbit button is selected then result is displayed.
+    else if (selectedOptionEl.nodeName.toLowerCase() === 'button' && selectedOptionEl.id === submitButtonID){
 
         //Submits the result and updates the local storage. Also displays high scores from local storage.
         submitResult();
     }
 
-    //When high score text is clicked.
-    else if(selectedOptionEl.nodeName.toLowerCase() === 'li' && selectedOptionEl.id === 'view-scores'){
+    //Go Back button.
 
-        //Displays high scores from local storage.
-    }
+
+    //Clear high score button.
 });
 
 //Submits the result and updates the local storage. Also displays high scores from local storage.
@@ -163,60 +179,71 @@ function submitResult(){
     let userInitial = userInitialTBEl.value;
     if(userInitial === '') return null;
 
-    //Gets all local storage for the quiz game.
-    let quizStorage = getQuizStorage();
+    //Hide result elements.
+
+
+    
     
     //Gets the storage counter for current result.
     let storageCounter = getStorageCounter();
 
-    //Stores current result to localstorage and returns it as an object.
-    let currentResult = storeCurrentResultToLocalStorage(storageCounter, userInitial);
-
-    //Adds current resutl to local storage array so that it can be displayed in browser.
-    quizStorage.push(currentResult);
-
+    //Stores current result to localstoraget.
+    storeCurrentResultToLocalStorage(storageCounter, userInitial);
 
     //Displays high scores from local storage.
+    displayHighScores();
 }
 
-//Stores current result to localstorage and returns it as an object.
-function storeCurrentResultToLocalStorage(storageCounter, userInitial){
+function displayHighScores(){
 
-    //Creates oject for current result.
-    let currentResult = {
-        initial: userInitial,
-        score: timeLeft
-    };
+    //Gets all local storage for the quiz game.
+    let quizStorage = getQuizStorage();
 
-    //Creates key.
-    let key = scoreKey + storageCounter;
+    contentEL.style.width = 'auto';
 
-    //Stores current result to local storage.
-    localStorage.setItem(key, JSON.stringify(currentResult));
+    //Creates h2 element and set its text to 'Highscores' and class to 'question-heading' class.
+    let viewScoreEl = document.createElement('h2');
+    viewScoreEl.textContent = highScoreText;
+    viewScoreEl.className = questionHeadingClass;
+    contentEL.appendChild(viewScoreEl);
 
-    return currentResult;
-}
+    //Creates un-ordered list element to display high scores.
+    let ulEl = document.createElement('ul');
 
-//Gets the storage counter for current result.
-//This is done by getting all keys for the quiz game, finding the last counter and incrementing it.
-function getStorageCounter(){
+    //Loops thorugh local storage and creates list element for each score.
+    //Sets background color for every second element.
+    //Adds these list elements to un-ordered list element.
+    for (let i = 0; i < quizStorage.length; i++) {
 
-    let counter = 0;
+        let optionEl = document.createElement('li');
+        optionEl.className = highScoreClass;
 
-    //Gets all keys from local storage.
-    let keys = Object.keys(localStorage);
+        if(i % 2 === 0) optionEl.style.backgroundColor= 'rgb(242, 238, 248)';
 
-    //Loops through all keys and gets the key pair.
-    for (let i = 0; i < keys.length; i++){
-        //Only processes key if it includes the word 'quizscore-'.
-        if(keys[i].includes(scoreKey)){
-            let number = parseInt(keys[i].replace(scoreKey, '', 10));
+        optionEl.textContent = `${i + 1}. ${quizStorage[i].initial} - ${quizStorage[i].score}`;
 
-            if(number > counter) counter = number;
-        }
+        ulEl.appendChild(optionEl);
     }
+    //Appends un-ordered list element to content element.
+    contentEL.appendChild(ulEl);
 
-    return counter + 1;
+    //Creates go back button.
+    let gobackButtonEl = document.createElement('button');
+    gobackButtonEl.innerHTML = gobackButtonText;
+    gobackButtonEl.style.border = displayNone;
+    gobackButtonEl.classList.add(optionClass, handClass);
+    gobackButtonEl.style.margin= highscoreButtonMargin;
+    gobackButtonEl.id = goBackButtonID;
+    contentEL.appendChild(gobackButtonEl);
+
+    //Creates clear highscores button.
+    let clearScoreButtonEl = document.createElement('button');
+    clearScoreButtonEl.innerHTML = clearScoreButtonText;
+    clearScoreButtonEl.style.border = displayNone;
+    clearScoreButtonEl.classList.add(optionClass, handClass);
+    clearScoreButtonEl.style.margin= highscoreButtonMargin;
+    clearScoreButtonEl.id = clearScoreButtonID;
+    contentEL.appendChild(clearScoreButtonEl);
 }
 
 //Gets all local storage for the quiz game.
@@ -241,6 +268,44 @@ function getQuizStorage(){
 
     //Returns the storage in descending order by score.
     return quizStorage.sort(({score:lowScore}, {score:highScore}) => highScore-lowScore);
+}
+
+//Stores current result to localstorage and returns it as an object.
+function storeCurrentResultToLocalStorage(storageCounter, userInitial){
+
+    //Creates oject for current result.
+    let currentResult = {
+        initial: userInitial,
+        score: timeLeft
+    };
+
+    //Creates key.
+    let key = scoreKey + storageCounter;
+
+    //Stores current result to local storage.
+    localStorage.setItem(key, JSON.stringify(currentResult));
+}
+
+//Gets the storage counter for current result.
+//This is done by getting all keys for the quiz game, finding the last counter and incrementing it.
+function getStorageCounter(){
+
+    let counter = 0;
+
+    //Gets all keys from local storage.
+    let keys = Object.keys(localStorage);
+
+    //Loops through all keys and gets the key pair.
+    for (let i = 0; i < keys.length; i++){
+        //Only processes key if it includes the word 'quizscore-'.
+        if(keys[i].includes(scoreKey)){
+            let number = parseInt(keys[i].replace(scoreKey, '', 10));
+
+            if(number > counter) counter = number;
+        }
+    }
+
+    return counter + 1;
 }
 
 //When one of the option from question is clicked, displays the result and processes next question.
@@ -310,6 +375,9 @@ function displayResult(){
     //Hides remaining time text.
     timeEl.style.display = displayNone;
 
+    //Makes view high score text visible.
+    viewScoresEl.style.visibility = visibleElement;
+
     //Creates h2 header.
     let resultHeadingEl = document.createElement('h2');
     resultHeadingEl.textContent = resultHeading;
@@ -349,6 +417,7 @@ function displayResult(){
     submitButtonEl.style.border = displayNone;
     submitButtonEl.style.marginLeft= oneRemSpace;
     submitButtonEl.classList.add(optionClass, handClass);
+    submitButtonEl.id = submitButtonID;
     initialContainerEl.appendChild(submitButtonEl);
 
     //Appends the elements to parent div element.
@@ -376,9 +445,7 @@ function removeCurrentQuestionElements(){
 startButtonEl.addEventListener('click', function(){
 
     //Hides header, paragrapg and start quiz buttton.
-    headingEl.style.display = displayNone;
-    initialParagraphEl.style.display = displayNone;
-    startButtonEl.style.display = displayNone;
+    hideInitialContent();
 
     //Makes the remaining time text visible and sets the initial time to time allowed.
     timeEl.style.visibility = visibleElement;
@@ -399,6 +466,15 @@ startButtonEl.addEventListener('click', function(){
     //Increments the question counter.
     questionNumber++;
 });
+
+//Hides view highscore, header, paragrapg and start quiz buttton.
+function hideInitialContent(){
+
+    viewScoresEl.style.visibility = hiddenElement;
+    headingEl.style.display = displayNone;
+    initialParagraphEl.style.display = displayNone;
+    startButtonEl.style.display = displayNone;
+}
 
 //Displays question and options in browser for specified index.
 function displayQuestionInBrowser(index){
