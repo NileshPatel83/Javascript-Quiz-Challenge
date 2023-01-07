@@ -113,7 +113,7 @@ const allQuestions = [
 ];
 
 //Global variables.
-let timeLeft = -1;
+let timeLeft = 0;
 let timeInterval;
 let quizList;                                   //List of 5 question chosen randomly that are displayed in browser.
 let correctAnswer;                              //Correct answer for the question displayed in browser.
@@ -165,6 +165,9 @@ function processQuestionOption(selectedOptionEl){
 
     //If the option is incorrect, displays the result as incorrect with red color.
     else{
+
+        //Deducts 15 seconds from time remaining time if the selected option is incorrect.
+        timeLeft -= timeDeduction;     
         resultEl.textContent = `${incorrectMessage}. ${timeDeduction} seconds deducted from remaining time.`;
         resultEl.style.color ='red';
     }
@@ -186,7 +189,7 @@ function processQuestions(){
     removeCurrentQuestionElements();
 
     //Displays result if all 5 questions are processed or timer reaches 0.
-    if(questionNumber == totalQuestions || timeLeft == 0){
+    if(questionNumber == totalQuestions || timeLeft <= 0){
 
         //Displays results.
         displayResult();
@@ -215,7 +218,9 @@ function displayResult(){
     //Creates div element and dispaly result score.
     //Set bottom marning to 1rem.
     let resultMessageEl = document.createElement('div');
-    resultMessageEl.textContent = `${resultMessage} ${timeLeft}.`
+
+    //Displays score as time remaining. If the time is less than 0 then shows the score as 0.
+    resultMessageEl.textContent = `${resultMessage} ${timeLeft < 0 ? 0: timeLeft}.`
     resultMessageEl.style.marginBottom = oneRemSpace;
     contentEL.appendChild(resultMessageEl);
 
@@ -357,13 +362,14 @@ function startTimer(){
     timeLeft = timeAllowed;
     
     timeInterval = setInterval(function () {
-        timeLeft--;
 
         //Sets the new time value.
         timeRemainingEl.textContent = timeLeft;
 
+        timeLeft--;
+
         //Stops the timer and displays score as 0.
-        if(timeLeft === 0){
+        if(timeLeft <= 0){
             clearInterval(timeInterval);
 
             //Removes current question elements from browser.
