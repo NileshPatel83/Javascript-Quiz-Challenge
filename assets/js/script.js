@@ -1,5 +1,5 @@
 //Constants
-const timeAllowed = 75;                         //Time allowed for the quiz.
+const timeAllowed = 15;                         //Time allowed for the quiz.
 const timeDeduction = 15;                       //Time deduction if user chooses wrong answer.
 const totalQuestions = 5;                       //Questions to be asked.
 const hiddenElement = 'hidden';                 //Hides the element.
@@ -139,7 +139,10 @@ contentEL.addEventListener('click', function(event){
         processQuestionOption(selectedOptionEl);
     }
 
-    
+    //If sumbit button is selected when result is displayed.
+    // else if (){
+
+    // }
 });
 
 //When one of the option from question is clicked, displays the result and processes next question.
@@ -162,7 +165,7 @@ function processQuestionOption(selectedOptionEl){
 
     //If the option is incorrect, displays the result as incorrect with red color.
     else{
-        resultEl.textContent = incorrectMessage;
+        resultEl.textContent = `${incorrectMessage}. ${timeDeduction} seconds deducted from remaining time.`;
         resultEl.style.color ='red';
     }
 
@@ -172,7 +175,7 @@ function processQuestionOption(selectedOptionEl){
     //Pauses the process for half a second.
     //This will allow the user to see the result before the removed current question elements from the browser and
     //displaying the next question elements.
-    setTimeout(() => {processQuestions()}, 500);
+    setTimeout(() => {processQuestions()}, 1000);
 }
 
 //Removes the current question elements from browser and displays next question elements in browser.
@@ -278,7 +281,7 @@ startButtonEl.addEventListener('click', function(){
     questionNumber = 0;
 
     // Starts the timer.
-    // startTimer();
+    startTimer();
 
     //Gets list of 5 questions randomly from all questions list.
     quizList = getQuizList();
@@ -362,6 +365,9 @@ function startTimer(){
         //Stops the timer and displays score as 0.
         if(timeLeft === 0){
             clearInterval(timeInterval);
+
+            //Removes current question elements from browser.
+            removeCurrentQuestionElements();
 
             //Displays results.
             displayResult();
