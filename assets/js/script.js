@@ -1,5 +1,5 @@
 //Constants
-const timeAllowed = 15;                         //Time allowed for the quiz.
+const timeAllowed = 75;                         //Time allowed for the quiz.
 const timeDeduction = 15;                       //Time deduction if user chooses wrong answer.
 const totalQuestions = 5;                       //Questions to be asked.
 const hiddenElement = 'hidden';                 //Hides the element.
@@ -7,13 +7,14 @@ const visibleElement = 'visible';               //Makes the element visible.
 const displayNone = 'none';                     //Sets the display of element to none.
 const displayInline = 'inline'                  //Sets the dispaly of element to inline.
 const oneRemSpace = '1rem'                      //One REM space for margin.
-const scoreKey ='quizscore';                    //Text used to get all keys from local storage.
+const scoreKey ='quizscore-';                    //Text used to get all keys from local storage.
 const correctMessage = 'Correct!';              //Dispplay message for correct answer.
 const incorrectMessage = 'Incorrect!';          //Display message for incorrect answer.
 const resultHeading = 'All done!'               //Result heading.
 const resultMessage = 'Your final score:'       //Resuly message.
 const initialText = 'Enter initials: '           //Initials text.
 const resultButtonText = 'Submit'               //Button text to submit result.
+const userInitialID = 'user-initial'            //ID for user initial textbox.
 const questionHeadingClass = 'question-heading' //Question heading class name.
 const optionClass = 'option';                   //Class name for options displayed for question.
 const handClass = 'hand';                       //Class name to set cursor to hand.
@@ -140,10 +141,88 @@ contentEL.addEventListener('click', function(event){
     }
 
     //If sumbit button is selected when result is displayed.
-    // else if (){
+    //Ignores when start button is selected.
+    else if (selectedOptionEl.nodeName.toLowerCase() === 'button' && selectedOptionEl.id !== 'start-button'){
 
-    // }
+        //Submits the result and updates the local storage. Also displays high scores from local storage.
+        submitResult();
+    }
+
+    //When high score text is clicked.
+    else if(selectedOptionEl.nodeName.toLowerCase() === 'li' && selectedOptionEl.id === 'view-scores'){
+
+        //Displays high scores from local storage.
+    }
 });
+
+//Submits the result and updates the local storage. Also displays high scores from local storage.
+function submitResult(){
+
+    //Gets the initial typed by the user. Exits the function if textbox is blank.
+    let userInitialTBEl = document.getElementById(userInitialID);
+    let userInitial = userInitialTBEl.value;
+    if(userInitial === '') return null;
+
+    //Gets all local storage for the quiz game.
+    let quizStorage = getQuizStorage();
+    
+    let storageCounter = 0;
+
+    if(quizStorage !== null){
+        // storageCounter = getLastStorageCounter(quizStorage);
+        storageCounter++;
+    }
+
+    //Stores current result to localstorage and returns it as an object.
+    let currentResult = storeCurrentResultToLocalStorage(storageCounter, userInitial);
+
+    //Adds current resutl to local storage array so that it can be displayed in browser.
+    quizStorage.push(currentResult);
+
+
+    //Displays high scores from local storage.
+}
+
+//Stores current result to localstorage and returns it as an object.
+function storeCurrentResultToLocalStorage(storageCounter, userInitial){
+
+    //Creates oject for current result.
+    let currentResult = {
+        initial: userInitial,
+        score: timeLeft
+    };
+
+    //Creates key.
+    let key = scoreKey + storageCounter;
+
+    //Stores current result to local storage.
+    localStorage.setItem(key, JSON.stringify(currentResult));
+
+    return currentResult;
+}
+
+//Gets all local storage for the quiz game.
+function getQuizStorage(){
+
+    let quizStorage = [];
+
+    //Gets all keys from local storage.
+    let keys = Object.keys(localStorage);
+
+    //Loops through all keys and gets the key pair.
+    for (let i = 0; i < keys.length; i++) {
+
+        //Only processes key if it includes the word 'quizscore-'.
+        if(keys[i].includes(scoreKey)) {
+
+            //Gets the key pair object and adds it to an array.
+            let storage = JSON.parse(localStorage.getItem(keys[i]));
+            if(storage !== null) quizStorage.push(storage);
+        }
+    }
+
+    return quizStorage;
+}
 
 //When one of the option from question is clicked, displays the result and processes next question.
 function processQuestionOption(selectedOptionEl){
@@ -167,8 +246,8 @@ function processQuestionOption(selectedOptionEl){
     else{
 
         //Deducts 15 seconds from time remaining time if the selected option is incorrect.
-        timeLeft -= timeDeduction;     
-        resultEl.textContent = `${incorrectMessage}. ${timeDeduction} seconds deducted from remaining time.`;
+        timeLeft -= timeDeduction;  
+        resultEl.textContent = incorrectMessage;
         resultEl.style.color ='red';
     }
 
@@ -178,7 +257,7 @@ function processQuestionOption(selectedOptionEl){
     //Pauses the process for half a second.
     //This will allow the user to see the result before the removed current question elements from the browser and
     //displaying the next question elements.
-    setTimeout(() => {processQuestions()}, 1000);
+    setTimeout(() => {processQuestions()}, 500);
 }
 
 //Removes the current question elements from browser and displays next question elements in browser.
@@ -190,6 +269,9 @@ function processQuestions(){
 
     //Displays result if all 5 questions are processed or timer reaches 0.
     if(questionNumber == totalQuestions || timeLeft <= 0){
+
+        //Stops the timer.
+        clearInterval(timeInterval);
 
         //Displays results.
         displayResult();
@@ -237,6 +319,7 @@ function displayResult(){
     //Creates textbox element to enter initial.
     let initialInputEl = document.createElement('INPUT');
     initialInputEl.setAttribute('type', 'text');
+    initialInputEl.id = userInitialID;
     initialContainerEl.appendChild(initialInputEl);
 
     //Create buttom element for submision.
@@ -365,11 +448,12 @@ function startTimer(){
 
         //Sets the new time value.
         timeRemainingEl.textContent = timeLeft;
-
         timeLeft--;
-
+        
         //Stops the timer and displays score as 0.
         if(timeLeft <= 0){
+
+            //Stops the timer.
             clearInterval(timeInterval);
 
             //Removes current question elements from browser.
