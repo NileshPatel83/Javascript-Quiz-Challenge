@@ -1,4 +1,4 @@
-# javascript-quiz-challenge
+# JavaScript Quiz Challenge
 JavaScript timed quiz that stores high scores to compare the progress.
 
 ## Description
