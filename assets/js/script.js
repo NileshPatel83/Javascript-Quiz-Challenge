@@ -123,6 +123,37 @@ const timeRemainingEl = document.getElementById('time-remaining');
 const startButtonEl = document.getElementById('start-button');
 const contentEL = document.getElementById('content');
 
+init();
+
+//Event listener for start button.
+startButtonEl.addEventListener('click', function(){
+
+    // //Hides header, paragrapg and start quiz buttton.
+    removeContentElements();
+
+    //Hides view highscore text.
+    viewScoresEl.style.visibility = hiddenElement;
+
+    //Makes the remaining time text visible and sets the initial time to time allowed.
+    timeEl.style.visibility = visibleElement;
+    timeRemainingEl.textContent = timeAllowed;
+
+    //Sets the initial value to 0, which displays the first question.
+    questionNumber = 0;
+
+    // Starts the timer.
+    startTimer();
+
+    //Gets list of 5 questions randomly from all questions list.
+    quizList = getQuizList();
+
+    //Displays first question in browser.
+    displayQuestionInBrowser(questionNumber);
+
+    //Increments the question counter.
+    questionNumber++;
+});
+
 //Event listener when 'View Highscores' text is clicked.
 viewScoresEl.addEventListener('click', function(){
 
@@ -221,13 +252,13 @@ function displayHighScores(){
     let ulEl = document.createElement('ul');
 
     //Loops thorugh local storage and creates list element for each score.
-    //Sets background color for every second element.
     //Adds these list elements to un-ordered list element.
     for (let i = 0; i < quizStorage.length; i++) {
 
         let optionEl = document.createElement('li');
         optionEl.className = 'highscore';
 
+        //Sets background color for even number elements.
         if(i % 2 === 0) optionEl.style.backgroundColor= 'rgb(242, 238, 248)';
 
         optionEl.textContent = `${i + 1}. ${quizStorage[i].initial} - ${quizStorage[i].score}`;
@@ -307,7 +338,9 @@ function getStorageCounter(){
 
     //Loops through all keys and gets the key pair.
     for (let i = 0; i < keys.length; i++){
+
         //Only processes key if it includes the word 'quizscore-'.
+        //Compares the localstorage counter and stores the max value.
         if(keys[i].includes(scoreKey)){
             let number = parseInt(keys[i].replace(scoreKey, '', 10));
 
@@ -349,14 +382,14 @@ function processQuestionOption(selectedOptionEl){
     contentEL.appendChild(resultEl);
 
     //Pauses the process for half a second.
-    //This will allow the user to see the result before the removed current question elements from the browser and
+    //This will allow the user to see the result before current question elements are removed from the browser and
     //displaying the next question elements.
-    setTimeout(() => {processQuestions()}, 500);
+    setTimeout(() => {processNextQuestion()}, 500);
 }
 
 //Removes the current question elements from browser and displays next question elements in browser.
 //Displays final score if all 5 questions are processed.
-function processQuestions(){
+function processNextQuestion(){
 
     //Removes current question elements from browser.
     removeContentElements();
@@ -407,7 +440,7 @@ function displayResult(){
     let initialContainerEl = document.createElement('div');
 
     //Creates div element to show initial text.
-    //Sets display syle to inline.
+    //Sets display style to inline.
     let initialEl = document.createElement('div');
     initialEl.textContent = 'Enter initials: ';
     initialEl.style.display = 'inline';
@@ -438,43 +471,14 @@ function displayResult(){
 function removeContentElements(){
 
     //Gets all direct children elements of content element.
-    let contentChilren = contentEL.children;
+    let contentChildren = contentEL.children;
 
     //Loops through all children and removed them from content element and makes the page clear.
-    for (let i = 0; i < contentChilren.length; i++){
-         contentChilren[i].remove();
+    for (let i = 0; i < contentChildren.length; i++){
+         contentChildren[i].remove();
          i--;
     }
 }
-
-//Event listener for start button.
-startButtonEl.addEventListener('click', function(){
-
-    // //Hides header, paragrapg and start quiz buttton.
-    removeContentElements();
-
-    //Hides view highscore text.
-    viewScoresEl.style.visibility = hiddenElement;
-
-    //Makes the remaining time text visible and sets the initial time to time allowed.
-    timeEl.style.visibility = visibleElement;
-    timeRemainingEl.textContent = timeAllowed;
-
-    //Sets the initial value to 0, which displays the first question.
-    questionNumber = 0;
-
-    // Starts the timer.
-    startTimer();
-
-    //Gets list of 5 questions randomly from all questions list.
-    quizList = getQuizList();
-
-    //Displays first question in browser.
-    displayQuestionInBrowser(questionNumber);
-
-    //Increments the question counter.
-    questionNumber++;
-});
 
 //Displays question and options in browser for specified index.
 function displayQuestionInBrowser(index){
@@ -515,22 +519,16 @@ function displayQuestionInBrowser(index){
 function getQuizList(){
     let quizList = [];
 
-    for (let i = 0; i < totalQuestions; i++) {
-
+    do{
         //Randomly gets the question from all questions array.
         let randomQuiz = allQuestions[Math.floor(Math.random() * allQuestions.length)];
-        
-        //Checks whether current question is already added to the list or not.
-        //If true then repeats the step.
-        if(quizList.includes(randomQuiz)){
-            i--;
-        }
 
-        //Otherwise adds the question to quiz list.
-        else{
+        //Checks whether current question is already added to the list or not. Only adds unique questions.
+        if(!quizList.includes(randomQuiz)){
             quizList.push(randomQuiz);
         }
-    }
+
+    }while(quizList.length <= totalQuestions)
 
     return quizList;
 }
@@ -566,5 +564,3 @@ function init(){
     //Hides the remaining time when page loads.
     timeEl.style.visibility = hiddenElement;
 }
-
-init();
