@@ -15,7 +15,7 @@ When the page loads, the user is presented to take the quiz. The quiz works as f
 - User can also see all the high scores for the game where user can compare the scores.
 
 ## Deployment
-The webpage is deployed to GitHub pages. Use below link to visit the webpage: https://nileshpatel83.github.io/javascript-quiz-challenge/
+The webpage is deployed to GitHub pages. Use below link to visit the https://nileshpatel83.github.io/Javascript-Quiz-Challenge/
 
 ## Screenshot
 ![JavaScript quiz game webpage](./assets/images/screenshot.png)
